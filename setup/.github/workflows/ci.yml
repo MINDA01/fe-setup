@@ -1,0 +1,44 @@
+name: CI
+
+on:
+    pull_request:
+        types: [opened, ready_for_review, synchronize]
+        branches: [main]
+
+jobs:
+    ci:
+        runs-on: ubuntu-20.04
+        strategy:
+            matrix:
+                node-version: [18.13]
+        steps:
+            - name: Checkout source code
+              uses: actions/checkout@v3
+
+            - name: Setup Node ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Environment configuration testing
+              env:
+                  REACT_APP_KAKAO_KEY: ${{ secrets.REACT_APP_KAKAO_KEY }}
+              run: |
+                  echo "REACT_APP_KAKAO_KEY" $REACT_APP_KAKAO_KEY
+
+            - name: Install dependencies
+              # https://yarnpkg.com/cli/install
+              run: yarn
+
+            - name: packages/* Build
+              run: |
+                  yarn build
+                  yarn a build
+
+            - name: Check Lint
+              # lint 검사
+              run: yarn a lint
+
+            - name: Check Unit Test
+              # unit test 검증
+              run: yarn a test:coverage
