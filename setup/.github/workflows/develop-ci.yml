@@ -1,9 +1,9 @@
-name: CI
+name: develop-ci
 
 on:
     pull_request:
         types: [opened, ready_for_review, synchronize]
-        branches: [main]
+        branches: [develop]
 
 jobs:
     ci:
@@ -30,15 +30,6 @@ jobs:
               # https://yarnpkg.com/cli/install
               run: yarn
 
-            - name: packages/* Build
+            - name: src/* Build
               run: |
                   yarn build
-                  yarn a build
-
-            - name: Check Lint
-              # lint 검사
-              run: yarn a lint
-
-            - name: Check Unit Test
-              # unit test 검증
-              run: yarn a test:coverage
